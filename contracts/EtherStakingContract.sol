@@ -119,4 +119,14 @@ rewardBalance[_user] += reward;
 
         emit StakeWithdrawn(msg.sender, userStake.amount, reward);
     }
+     // Function to update the reward rate (only owner can call)
+    function setRewardRate(uint256 _newRate) external onlyOwner {
+        rewardRatePerSecond = _newRate;
+        emit RewardRateUpdated(_newRate);
+    }
+
+    // Fallback function to accept Ether
+    receive() external payable {
+        initialContractBalance += msg.value;
+    }
 }
