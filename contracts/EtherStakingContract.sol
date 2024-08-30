@@ -25,6 +25,9 @@ contract EtherStaking {
 
     // dictionary store stakes by user address
     mapping(address => Stake) public stakes;
+    // Mapping to store calculated rewards
+    mapping(address => uint256) public rewardBalance;
+
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not contract owner");
@@ -84,7 +87,17 @@ contract EtherStaking {
 
         require(reward <= initialContractBalance, "Reward exceeds available funds");
   
-
+rewardBalance[_user] += reward;
         initialContractBalance -= reward;
+    }
+
+    // Function to view current staked balance
+    function viewStakedBalance() external view returns (uint256) {
+        return stakes[msg.sender].amount;
+    }
+
+    // Function to view calculated rewards
+    function viewRewards() external view returns (uint256) {
+        return rewardBalance[msg.sender];
     }
 }
