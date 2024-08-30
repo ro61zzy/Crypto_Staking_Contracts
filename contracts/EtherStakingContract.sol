@@ -100,4 +100,23 @@ rewardBalance[_user] += reward;
     function viewRewards() external view returns (uint256) {
         return rewardBalance[msg.sender];
     }
+
+
+      // Function to withdraw staked Ether and rewards
+    function withdrawStake() external stakeLocked(msg.sender) nonZeroAddress(msg.sender) {
+        Stake storage userStake = stakes[msg.sender];
+        require(userStake.amount > 0, "No active stake found");
+        require(!userStake.isWithdrawn, "Stake already withdrawn");
+
+        uint256 reward = rewardBalance[msg.sender];
+        uint256 totalAmount = userStake.amount + reward;
+
+        userStake.isWithdrawn = true;
+        rewardBalance[msg.sender] = 0;
+
+        (bool sent, ) = msg.sender.call{value: totalAmount}("");
+        require(sent, "Withdrawal failed");
+
+        emit StakeWithdrawn(msg.sender, userStake.amount, reward);
+    }
 }
