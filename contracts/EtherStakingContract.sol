@@ -28,7 +28,6 @@ contract EtherStaking {
     // Mapping to store calculated rewards
     mapping(address => uint256) public rewardBalance;
 
-
     modifier onlyOwner() {
         require(msg.sender == owner, "Not contract owner");
         _;
@@ -38,17 +37,19 @@ contract EtherStaking {
         address indexed user,
         uint256 amount,
         uint256 unlockTime
-    );  
+    );
     event StakeWithdrawn(address indexed user, uint256 amount, uint256 reward);
     event RewardRateUpdated(uint256 newRewardRate);
-
 
     modifier nonZeroAddress(address _address) {
         require(_address != address(0), "Zero address detected!");
         _;
     }
-     modifier stakeLocked(address _user) {
-        require(block.timestamp >= stakes[_user].unlockTime, "Staking period not yet over");
+    modifier stakeLocked(address _user) {
+        require(
+            block.timestamp >= stakes[_user].unlockTime,
+            "Staking period not yet over"
+        );
         _;
     }
 
@@ -85,9 +86,12 @@ contract EtherStaking {
         uint256 stakedAmount = stakes[_user].amount;
         uint256 reward = (stakedAmount * _days * rewardRatePerSecond) / 1 ether;
 
-        require(reward <= initialContractBalance, "Reward exceeds available funds");
-  
-rewardBalance[_user] += reward;
+        require(
+            reward <= initialContractBalance,
+            "Reward exceeds available funds"
+        );
+
+        rewardBalance[_user] += reward;
         initialContractBalance -= reward;
     }
 
@@ -101,9 +105,12 @@ rewardBalance[_user] += reward;
         return rewardBalance[msg.sender];
     }
 
-
-      // Function to withdraw staked Ether and rewards
-    function withdrawStake() external stakeLocked(msg.sender) nonZeroAddress(msg.sender) {
+    // Function to withdraw staked Ether and rewards
+    function withdrawStake()
+        external
+        stakeLocked(msg.sender)
+        nonZeroAddress(msg.sender)
+    {
         Stake storage userStake = stakes[msg.sender];
         require(userStake.amount > 0, "No active stake found");
         require(!userStake.isWithdrawn, "Stake already withdrawn");
@@ -119,7 +126,8 @@ rewardBalance[_user] += reward;
 
         emit StakeWithdrawn(msg.sender, userStake.amount, reward);
     }
-     // Function to update the reward rate (only owner can call)
+
+    // Function to update the reward rate (only owner can call)
     function setRewardRate(uint256 _newRate) external onlyOwner {
         rewardRatePerSecond = _newRate;
         emit RewardRateUpdated(_newRate);
