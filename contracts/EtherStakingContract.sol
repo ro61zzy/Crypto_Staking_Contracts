@@ -35,10 +35,17 @@ contract EtherStaking {
         address indexed user,
         uint256 amount,
         uint256 unlockTime
-    );
+    );  
+    event StakeWithdrawn(address indexed user, uint256 amount, uint256 reward);
+    event RewardRateUpdated(uint256 newRewardRate);
+
 
     modifier nonZeroAddress(address _address) {
         require(_address != address(0), "Zero address detected!");
+        _;
+    }
+     modifier stakeLocked(address _user) {
+        require(block.timestamp >= stakes[_user].unlockTime, "Staking period not yet over");
         _;
     }
 
@@ -68,5 +75,16 @@ contract EtherStaking {
         calculateReward(msg.sender, _days);
 
         emit StakeDeposited(msg.sender, msg.value, unlockTime);
+    }
+
+    // Function to calculate rewards
+    function calculateReward(address _user, uint256 _days) internal {
+        uint256 stakedAmount = stakes[_user].amount;
+        uint256 reward = (stakedAmount * _days * rewardRatePerSecond) / 1 ether;
+
+        require(reward <= initialContractBalance, "Reward exceeds available funds");
+  
+
+        initialContractBalance -= reward;
     }
 }
