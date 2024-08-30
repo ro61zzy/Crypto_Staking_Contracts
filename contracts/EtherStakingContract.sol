@@ -9,3 +9,13 @@ pragma solidity ^0.8.18;
     5. Users can withdraw both their staked Ether and the earned rewards after the staking period ends.
     6. Ensure the contract is secure, with careful handling of users' funds and accurate reward calculations.
 */
+
+contract EtherStaking {
+
+    address public owner;
+    uint256 public rewardRatePerSecond; //can be adjusted by the owner
+    uint256 public initialContractBalance;   //e nsure rewards don't exceed available funds
+
+
+    
+}
