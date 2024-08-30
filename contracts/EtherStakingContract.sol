@@ -16,6 +16,17 @@ contract EtherStaking {
     uint256 public rewardRatePerSecond; //can be adjusted by the owner
     uint256 public initialContractBalance;   //e nsure rewards don't exceed available funds
 
+   // store staking information in struct
+    struct Stake {
+        uint256 amount;        // Amount of Ether staked
+        uint256 startTime;     // when the staking started
+        uint256 unlockTime;    // when the staked Ether can be withdrawn
+        bool isWithdrawn;      // check if the stake is withdrawn
+    }
 
-    
+     // dictionary store stakes by user address
+    mapping(address => Stake) public stakes;
+
+
+
 }
