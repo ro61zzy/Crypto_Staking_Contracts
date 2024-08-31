@@ -8,5 +8,10 @@ contract ERC20Staking {
     address public owner; // deployer/owner address
     uint256 public rewardRatePerSecond; //adjustable by the owner
 
-    
+     struct Stake {
+        uint256 amount;        // Amount of tokens staked
+        uint256 startTime;     // when the staking started
+        uint256 unlockTime;    // when the staked tokens can be withdrawn
+        bool isWithdrawn;      // if the stake is withdrawn
+    }
 }
