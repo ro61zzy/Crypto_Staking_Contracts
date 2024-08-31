@@ -69,4 +69,22 @@ contract ERC20Staking {
         emit TokensStaked(msg.sender, _amount, unlockTime);
     }
 
+  // Function to calculate rewards
+    function calculateReward(address _user, uint256 _days) internal {
+        uint256 stakedAmount = stakes[_user].amount;
+        uint256 reward = (stakedAmount * _days * rewardRatePerSecond) / 1 ether;
+
+        rewardBalance[_user] += reward;
+    }
+
+    // Function to view current staked balance
+    function viewStakedBalance() external view returns (uint256) {
+        return stakes[msg.sender].amount;
+    }
+
+    // Function to view calculated rewards
+    function viewRewards() external view returns (uint256) {
+        return rewardBalance[msg.sender];
+    }
+
 }
