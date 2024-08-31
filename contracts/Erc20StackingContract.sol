@@ -87,4 +87,30 @@ contract ERC20Staking {
         return rewardBalance[msg.sender];
     }
 
+     // Function to withdraw staked tokens and rewards
+    function withdrawStake() external stakeLocked(msg.sender) nonZeroAddress(msg.sender) {
+        Stake storage userStake = stakes[msg.sender];
+        require(userStake.amount > 0, "No active stake found");
+        require(!userStake.isWithdrawn, "Stake already withdrawn");
+
+        uint256 reward = rewardBalance[msg.sender];
+        uint256 totalAmount = userStake.amount + reward;
+
+        userStake.isWithdrawn = true;
+        rewardBalance[msg.sender] = 0;
+
+        // Transfer the staked tokens and rewards back to the user
+        require(stakingToken.transfer(msg.sender, userStake.amount), "Token transfer failed");
+        (bool sent, ) = msg.sender.call{value: reward}("");
+        require(sent, "Reward withdrawal failed");
+
+        emit StakeWithdrawn(msg.sender, userStake.amount, reward);
+    }
+
+    // Function to update the reward rate (only owner can call)
+    function setRewardRate(uint256 _newRate) external onlyOwner {
+        rewardRatePerSecond = _newRate;
+        emit RewardRateUpdated(_newRate);
+    }
+
 }
