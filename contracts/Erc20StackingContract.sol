@@ -1,6 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
+
+// Objective: ERC20 Staking Smart Contract
+
+// Requirements:
+// 1. Users can stake the ERC20 token by transferring tokens to the contract.
+// 2. The contract tracks the amount and duration of each user's stake.
+// 3. Implement a reward mechanism based on staking duration, similar to Ether staking.
+// 4. Users can withdraw their staked tokens and earned rewards after the staking period ends.
+// 5. Ensure secure and efficient handling of ERC20 token transfers.
+
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract ERC20Staking {
