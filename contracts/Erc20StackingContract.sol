@@ -64,7 +64,7 @@ contract ERC20Staking {
         userStake.unlockTime = unlockTime;
         userStake.isWithdrawn = false;
 
-      
+      calculateReward(msg.sender, _days);
 
         emit TokensStaked(msg.sender, _amount, unlockTime);
     }
